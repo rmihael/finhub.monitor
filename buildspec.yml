@@ -9,3 +9,4 @@ artifacts:
   type: zip
   files:
   - sam-output.yaml
+
