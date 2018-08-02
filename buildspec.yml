@@ -4,8 +4,8 @@ phases:
     commands:
     - pip install -r requirements.txt -t build/
     - cp -R monitor lambda.py build/
-    - aws cloudformation package --template-file template.yaml --s3-bucket lambda-finhubmonitor --output-template-file sam_output.yaml
+    - aws cloudformation package --template-file template.yaml --s3-bucket codepipeline-finhubmonitor --output-template-file sam-output.yaml
 artifacts:
   type: zip
   files:
-  - sam_output.yaml
+  - sam-output.yaml
