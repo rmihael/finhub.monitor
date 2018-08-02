@@ -24,7 +24,7 @@ Resources:
                     EMAIL: value
                     PASSWORD: value
             Events:
-                HelloWorld:
+                Schedule:
                     Type: Schedule
                     Properties:
                       Schedule: rate(5 minutes)
