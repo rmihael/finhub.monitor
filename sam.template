@@ -5,12 +5,6 @@ Description: >
 
   Simple monitor to detect interesting loans
     
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-Globals:
-  Function:
-    Timeout: 30
-    Runtime: python3.6
-
 
 Parameters:
   Email:
@@ -25,6 +19,8 @@ Resources:
   FihHubMonitorFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 30
+      Runtime: python3.6
       CodeUri: build/
       Handler: lambda.handler
 
@@ -32,6 +28,7 @@ Resources:
         Variables:
           EMAIL: !Ref Email
           PASSWORD: !Ref Password
+          TOPIC: !Ref InterstingLoansNotifications
       Events:
         Schedule:
           Type: Schedule
