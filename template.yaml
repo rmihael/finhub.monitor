@@ -29,12 +29,12 @@ Resources:
           Properties:
             Schedule: rate(5 minutes)
 
-    AlreadySeenLoans:
-      Type: AWS::Serverless::SimpleTable
-      Properties:
-        PrimaryKey:
-          Name: id
-          Type: String
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+  AlreadySeenLoans:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
