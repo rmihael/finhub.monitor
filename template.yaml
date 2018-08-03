@@ -1,30 +1,40 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    FinHub Monitor
+  FinHub Monitor
 
-    Simple monitor to detect interesting loans
+  Simple monitor to detect interesting loans
     
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
-    Function:
-        Timeout: 30
-        Runtime: python3.6
+  Function:
+    Timeout: 30
+    Runtime: python3.6
 
 
 Resources:
-    FihHubMonitorFunction:
-        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-        Properties:
-            CodeUri: build/
-            Handler: lambda.handler
+  FihHubMonitorFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: build/
+      Handler: lambda.handler
 
-            Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-                Variables:
-                    EMAIL: value
-                    PASSWORD: value
-            Events:
-                Schedule:
-                    Type: Schedule
-                    Properties:
-                      Schedule: rate(5 minutes)
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          EMAIL: value
+          PASSWORD: value
+      Events:
+        Schedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)
+
+    AlreadySeenLoans:
+      Type: AWS::Serverless::SimpleTable
+      Properties:
+        PrimaryKey:
+          Name: id
+          Type: String
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
