@@ -52,5 +52,5 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       Subscription:
-        - protocol: email
-          endpoint: !Ref Email
+        - Protocol: email
+          Endpoint: !Ref Email
