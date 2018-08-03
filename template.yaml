@@ -12,17 +12,26 @@ Globals:
     Runtime: python3.6
 
 
+Parameters:
+  Email:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: finhubmonitor.email
+  Password:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: finhubmonitor.password
+
+
 Resources:
   FihHubMonitorFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: build/
       Handler: lambda.handler
 
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+      Environment:
         Variables:
-          EMAIL: value
-          PASSWORD: value
+          EMAIL: !Ref Email
+          PASSWORD: !Ref Password
       Events:
         Schedule:
           Type: Schedule
