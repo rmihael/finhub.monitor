@@ -47,3 +47,10 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+
+  InterstingLoansNotifications:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - protocol: email
+        - endpoint: !Ref Email
