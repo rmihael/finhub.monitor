@@ -53,4 +53,4 @@ Resources:
     Properties:
       Subscription:
         - protocol: email
-        - endpoint: !Ref Email
+          endpoint: !Ref Email
