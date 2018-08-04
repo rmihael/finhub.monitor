@@ -67,6 +67,7 @@ class FinHubMonitor:
     def get_interesting_loans(self, max_risk_level: int) -> List[LoanRequest]:
         loans = self._api.get_loan_requests()
         new_ids = self._known_loans.filter_out_known_ids([l.loan_id for l in loans])
-        interesting_loans = [l for l in loans if l.risk_level <= max_risk_level if l.loan_id in new_ids]
+        new_loans = [l for l in loans if l.loan_id in new_ids]
+        interesting_loans = [l for l in new_loans if l.risk_level <= max_risk_level and l.rest > 0]
         self._known_loans.memorize_loans(new_ids, datetime.utcnow())
         return interesting_loans

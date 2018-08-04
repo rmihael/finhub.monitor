@@ -33,7 +33,8 @@ Resources:
           EMAIL: !Ref Email
           PASSWORD: !Ref Password
           TABLE: !Ref AlreadySeenLoans
-          TOPIC: !GetAtt InterstingLoansNotifications.TopicName
+          TOPIC: !Ref InterstingLoansNotifications
+          MAX_RISK_LEVEL: 2
       Events:
         Schedule:
           Type: Schedule
