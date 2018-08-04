@@ -27,7 +27,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref AlreadySeenLoans
         - SNSPublishMessagePolicy:
-            TopicName:
+            TopicName: !GetAtt InterstingLoansNotifications.TopicName
       Environment:
         Variables:
           EMAIL: !Ref Email
@@ -53,6 +53,7 @@ Resources:
   InterstingLoansNotifications:
     Type: AWS::SNS::Topic
     Properties:
+      TopicName: InterstingLoansNotifications
       Subscription:
         - Protocol: email
           Endpoint: !Ref Email
