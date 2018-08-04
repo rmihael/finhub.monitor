@@ -9,6 +9,7 @@ from monitor.dao import KnownLoansDAO
 from monitor.domain import LoanRequest
 
 log = logging.getLogger()
+log.setLevel(logging.INFO)
 
 
 class FinhubAPI:

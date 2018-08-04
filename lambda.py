@@ -16,4 +16,3 @@ def handler(event, context):
     if len(loans):
         topic = boto3.resource("sns").Topic(os.environ['TOPIC'])
         topic.publish(Message=pformat(loans), Subject="New interesting loans on FinHub")
-    
