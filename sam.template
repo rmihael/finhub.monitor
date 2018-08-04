@@ -23,13 +23,17 @@ Resources:
       Runtime: python3.6
       CodeUri: build/
       Handler: lambda.handler
-
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AlreadySeenLoans
+        - SNSPublishMessagePolicy:
+            TopicName:
       Environment:
         Variables:
           EMAIL: !Ref Email
           PASSWORD: !Ref Password
           TABLE: !Ref AlreadySeenLoans
-          TOPIC: !Ref InterstingLoansNotifications
+          TOPIC: !GetAtt InterstingLoansNotifications.TopicName
       Events:
         Schedule:
           Type: Schedule
