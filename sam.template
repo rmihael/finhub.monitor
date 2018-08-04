@@ -28,6 +28,7 @@ Resources:
         Variables:
           EMAIL: !Ref Email
           PASSWORD: !Ref Password
+          TABLE: !Ref AlreadySeenLoans
           TOPIC: !Ref InterstingLoansNotifications
       Events:
         Schedule:

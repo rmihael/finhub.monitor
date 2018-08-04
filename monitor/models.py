@@ -1,19 +1,30 @@
+from datetime import datetime
 from typing import List
 
 import requests
 from purl import URL
 
+from monitor.dao import KnownLoansDAO
 from monitor.domain import LoanRequest
 
 
-class FinhubMonitor:
-    def __init__(self, endpoint: URL) -> None:
+class FinhubAPI:
+    def __init__(self, email: str, password: str, endpoint: URL) -> None:
+        self._email = email
+        self._password = password
         self._endpoint = endpoint
+        self._raw_token = None
 
-    def login(self, email: str, password: str) -> str:
+    @property
+    def _token(self):
+        if self._raw_token is None:
+            self._raw_token = self._login()
+        return self._raw_token
+
+    def _login(self) -> str:
         body = {
-            "email": email,
-            "password": password,
+            "email": self._email,
+            "password": self._password,
             "session": {
                 "browser": "chrome",
                 "deviceId": "mac",
@@ -36,13 +47,26 @@ class FinhubMonitor:
                                  json=body)
         return response.headers['JWT']
 
-    def get_loan_requests(self, token: str) -> List[LoanRequest]:
+    def get_loan_requests(self) -> List[LoanRequest]:
         url = self._endpoint.add_path_segment("investor")\
                             .add_path_segment("investment")\
                             .add_path_segment("direct")\
                             .add_path_segment("page")\
                             .add_path_segment("1")
-        response = requests.get(url, headers={"Authorization": "Bearer " + token}).json()
+        response = requests.get(url, headers={"Authorization": "Bearer " + self._token}).json()
         return [LoanRequest(risk_level_group=int(i['riskLevelGroup']), risk_level=i['riskLevelRate'],
-                            total=i['amount'], rest=i['investRest'])
+                            total=i['amount'], rest=i['investRest'], loan_id=i['appNum'])
                 for i in response['data'] if i['investRest'] > 0]
+
+
+class FinHubMonitor:
+    def __init__(self, api: FinhubAPI, known_loans: KnownLoansDAO):
+        self._api = api
+        self._known_loans = known_loans
+
+    def get_interesting_loans(self, max_risk_level: int) -> List[LoanRequest]:
+        loans = self._api.get_loan_requests()
+        new_ids = self._known_loans.filter_out_known_ids([l.loan_id for l in loans])
+        interesting_loans = [l for l in loans if l.risk_level <= max_risk_level if l.loan_id in new_ids]
+        self._known_loans.memorize_loans(new_ids, datetime.utcnow())
+        return interesting_loans
