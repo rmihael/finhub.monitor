@@ -34,7 +34,7 @@ Resources:
           PASSWORD: !Ref Password
           TABLE: !Ref AlreadySeenLoans
           TOPIC: !Ref InterstingLoansNotifications
-          MAX_RISK_LEVEL: 2
+          MAX_RISK_LEVEL: 5
       Events:
         Schedule:
           Type: Schedule
