@@ -68,10 +68,13 @@ Resources:
   FailureAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
+      Dimensions:
+        - Name: Resource
+          Value: !Ref FihHubMonitorFunction
       AlarmActions:
       - Ref: ExecutionErrorNotifications
       ComparisonOperator: GreaterThanThreshold
-      EvaluationPeriods: 1
+      EvaluationPeriods: 30
       InsufficientDataActions:
       - Ref: ExecutionErrorNotifications
       MetricName: Errors
