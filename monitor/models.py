@@ -2,8 +2,10 @@ from datetime import datetime
 import logging
 from typing import List
 
-import requests
 from purl import URL
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 from monitor.dao import KnownLoansDAO
 from monitor.domain import LoanRequest
@@ -12,11 +14,16 @@ log = logging.getLogger()
 
 
 class FinhubAPI:
+    _timeout = (0.5, 3)
+
     def __init__(self, email: str, password: str, endpoint: URL) -> None:
         self._email = email
         self._password = password
         self._endpoint = endpoint
         self._raw_token = None
+        self._session = requests.Session()
+        retry = Retry(total=3, method_whitelist=('GET',), backoff_factor=0.1)
+        self._session.mount('https://', HTTPAdapter(max_retries=retry))
 
     @property
     def _token(self):
@@ -47,7 +54,7 @@ class FinhubAPI:
             }
         }
         response = requests.post(self._endpoint.add_path_segment("user").add_path_segment("login").as_string(),
-                                 json=body)
+                                 json=body, timeout=self._timeout)
         return response.headers['JWT']
 
     def get_loan_requests(self) -> List[LoanRequest]:
@@ -56,7 +63,7 @@ class FinhubAPI:
                             .add_path_segment("direct")\
                             .add_path_segment("page")\
                             .add_path_segment("1")
-        response = requests.get(url, headers={"Authorization": "Bearer " + self._token}).json()
+        response = requests.get(url, headers={"Authorization": "Bearer " + self._token}, timeout=self._timeout).json()
         return [LoanRequest(risk_level_group=int(i['riskLevelGroup']), risk_level=i['riskLevelRate'],
                             total=i['amount'], rest=i['investRest'], loan_id=i['appNum'])
                 for i in response['data'] if i['investRest'] > 0]
