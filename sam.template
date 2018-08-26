@@ -71,7 +71,7 @@ Resources:
       AlarmActions:
       - Ref: ExecutionErrorNotifications
       ComparisonOperator: GreaterThanThreshold
-      EvaluationPeriods: 30
+      EvaluationPeriods: 1
       InsufficientDataActions:
       - Ref: ExecutionErrorNotifications
       MetricName: Errors
