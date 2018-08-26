@@ -57,3 +57,26 @@ Resources:
       Subscription:
         - Protocol: email
           Endpoint: !Ref Email
+
+  ExecutionErrorNotifications:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+      - Protocol: email
+        Endpoint: !Ref Email
+
+  FailureAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+      - Ref: ExecutionErrorNotifications
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 30
+      InsufficientDataActions:
+      - Ref: ExecutionErrorNotifications
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 1.0
+      Unit: Count
